@@ -7,7 +7,7 @@ Tested up to: 3.2.1
 Stable tag: 1.0
 Donate link: http://thydzik.com
 
-*Slimbox2 Slideshow* is a WordPress plugin used to display Lightbox effects on images.
+Slimbox2 Slideshow is a WordPress plugin used to display Lightbox effects on images.
 
 == Description ==
 
