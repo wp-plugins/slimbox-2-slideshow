@@ -1,11 +1,11 @@
 <?php 
 /* 
 	Plugin Name: Slimbox2 with Slideshow
-	Plugin URL: http://thydzik.com/category/slimbox2-slideshow/
+	Plugin URI: http://thydzik.com/category/slimbox2-slideshow/
 	Description: Slimbox2 with auto-resize and slideshow
 	Version: 1.0.2
 	Author: Travis Hydzik
-	Author URL: http://thydzik.com
+	Author URI: http://thydzik.com
 */ 
 /*  Copyright 2011 Travis Hydzik (mail@thydzik.com)
 
