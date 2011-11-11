@@ -3,7 +3,7 @@
 	Plugin Name: Slimbox2 with Slideshow
 	Plugin URL: http://thydzik.com/category/slimbox2-slideshow/
 	Description: Slimbox2 with auto-resize and slideshow
-	Version: 1.0.1
+	Version: 1.0.2
 	Author: Travis Hydzik
 	Author URL: http://thydzik.com
 */ 
@@ -102,7 +102,7 @@ function tss_create_xml() {
 		}
 	}
 	
-	$file = WP_PLUGIN_DIR."/".TSS_FOLDER."/images.xml";
+	$file = dirname(__FILE__)."/images.xml";
 	$xml->save($file);
 }
 
