@@ -3,7 +3,7 @@
 	Plugin Name: Slimbox2 with Slideshow
 	Plugin URL: http://thydzik.com/category/slimbox2-slideshow/
 	Description: Slimbox2 with auto-resize and slideshow
-	Version: 1.0
+	Version: 1.0.1
 	Author: Travis Hydzik
 	Author URL: http://thydzik.com
 */ 
@@ -191,7 +191,7 @@ function tss_submenu_page() {
 function tss_init() {
     if (!is_admin()) {
 			wp_deregister_script("jquery");
-			wp_register_script("jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js");
+			wp_register_script("jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js", array(), Null);
 			wp_enqueue_script("jquery");
 			wp_register_script("tss_js", plugins_url("tss.min.js",__FILE__), array("jquery"));
 			wp_enqueue_script( "tss_js" );
@@ -217,8 +217,8 @@ function tss_init() {
 function tss_addrel($content) {
 
 	global $post;
-	$pattern        = "/(<a(?![^>]*?rel=['\"]lightbox.*)[^>]*?href=['\"][^'\"]+?\.(?:bmp|gif|jpg|jpeg|png)['\"][^\>]*)>/i";
-	$replacement    = '$1 rel="lightbox'.$post->ID.'">';
+	$pattern        = '%(<a(?![^>]*?rel=[\'"]lightbox.*)[^>]*?href=[\'"][^\'"]+?\.(?:bmp|gif|jpg|jpeg|png)[\'"][^>]*?)(/?>)%i';
+	$replacement    = '$1 rel="lightbox'.$post->ID.'" $2';
 	$content = preg_replace($pattern, $replacement, $content);
 
 	return $content;
