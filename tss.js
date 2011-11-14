@@ -82,35 +82,35 @@ if (!/android|iphone|ipod|series60|symbian|windows ce|blackberry/i.test(navigato
 		// Append the Slimbox HTML code at the bottom of the document
 		$("body").append(
 			$([
-				overlay = $('<div id="lbOverlay" />')[0],
-				center = $('<div id="lbCenter" />')[0],
-				bottomContainer = $('<div id="lbBottomContainer" />')[0]
+				overlay = $('<div id="tssOverlay" />')[0],
+				center = $('<div id="tssCenter" />')[0],
+				bottomContainer = $('<div id="tssBottomContainer" />')[0]
 			]).css("display", "none")
 		);
 
 		if (tss_auto) { //will be a value if auto size is enabled
-			image = $('<div id="lbImage" />').appendTo(center).append(
+			image = $('<div id="tssImage" />').appendTo(center).append(
 				sizer = $('<div style="position: relative;" />').append([
-					slide    = $('<img id="lbSlide" src="#" alt="" />')[0],
-					nextLink = $('<a id="lbNextLinkAuto" href="#" />').text('.').click(next)[0],
-					prevLink = $('<a id="lbPrevLinkAuto" href="#" />').text('.').click(previous)[0]
+					slide    = $('<img id="tssSlide" src="#" alt="" />')[0],
+					nextLink = $('<a id="tssNextLinkAuto" href="#" />').text('.').click(next)[0],
+					prevLink = $('<a id="tssPrevLinkAuto" href="#" />').text('.').click(previous)[0]
 				])[0]
 			)[0];
 
-			window.nextlink = document.getElementById('lbNextLinkAuto');
+			window.nextlink = document.getElementById('tssNextLinkAuto');
 		} else {
-			image = $('<div id="lbImage" />').appendTo(center).append(
+			image = $('<div id="tssImage" />').appendTo(center).append(
 				sizer = $('<div style="position: relative;" />').append([
-					nextLink = $('<a id="lbNextLink" href="#" />').click(next)[0],
-					prevLink = $('<a id="lbPrevLink" href="#" />').click(previous)[0]
+					nextLink = $('<a id="tssNextLink" href="#" />').click(next)[0],
+					prevLink = $('<a id="tssPrevLink" href="#" />').click(previous)[0]
 				])[0]
 			)[0];
 		}
 
-		bottom = $('<div id="lbBottom" />').appendTo(bottomContainer).append([
-			$('<a id="lbCloseLink" href="#" />').add(overlay).click(close)[0],
-			caption = $('<div id="lbCaption" />')[0],
-			number = $('<div id="lbNumber" />')[0],
+		bottom = $('<div id="tssBottom" />').appendTo(bottomContainer).append([
+			$('<a id="tssCloseLink" href="#" />').add(overlay).click(close)[0],
+			caption = $('<div id="tssCaption" />')[0],
+			number = $('<div id="tssNumber" />')[0],
 			$('<div style="clear: both;" />')[0]
 		])[0];
 
@@ -264,7 +264,7 @@ if (!/android|iphone|ipod|series60|symbian|windows ce|blackberry/i.test(navigato
 			nextImage = ((activeImage + 1) % images.length) || (options.loop ? 0 : -1);
 
 			stop();
-			center.className = "lbLoading";
+			center.className = "tssLoading";
 
 			preload = new Image();
 			preload.onload = animateBox;
