@@ -48,6 +48,7 @@
 	font-size: 100000px;  /* Workaround needed for IE */
 	overflow: hidden;     /* Workaround needed for IE */
 	color: #666;
+	line-height: 9999px;
 }
 
 #tssPrevLink, #tssPrevLinkAuto {

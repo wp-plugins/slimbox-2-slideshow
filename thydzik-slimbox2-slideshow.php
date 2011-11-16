@@ -3,7 +3,7 @@
 	Plugin Name: Slimbox2 with Slideshow
 	Plugin URI: http://thydzik.com/category/slimbox2-slideshow/
 	Description: Slimbox2 with auto-resize and slideshow
-	Version: 1.0.3
+	Version: 1.1
 	Author: Travis Hydzik
 	Author URI: http://thydzik.com
 */ 
@@ -24,7 +24,7 @@
 
 */
 
-define("TSS_VERSION", '1.0.3');
+define("TSS_VERSION", '1.1');
 define("TSS_FOLDER", "thydzik-slimbox2-slideshow");
 
 
@@ -44,6 +44,7 @@ if(!function_exists("get_option")) {
 //default values
 $tss_options = array(
 	"tss_tag" 	=> "checked",
+	"tss_gal" 	=> "checked",
 	"tss_auto" 	=> "checked",
 	"tss_scaling" => 0.75,
 	"tss_maps" 	=> "",
@@ -72,8 +73,6 @@ function tss_create_xml() {
 		if ($post_content) {
 			@$dom->loadHTML($post_content);
 			$as = $dom->getElementsByTagName('a');
-			
-			
 			
 			//fwrite($fh, "<image>\r\n");
 			foreach ($as as $a) {
@@ -133,6 +132,11 @@ function tss_submenu_page() {
 		} else {
 			update_option("tss_tag", '');
 		}
+		if ($_POST["tss_gal"]) {
+			update_option("tss_gal", 'checked');
+		} else {
+			update_option("tss_gal", '');
+		}
 		if ($_POST["tss_auto"]) {
 			update_option("tss_auto", 'checked');
 		} else {
@@ -156,6 +160,11 @@ function tss_submenu_page() {
 			"	<th scope='row'>Automatic Image Link Tagging:</th>\r\n".
 			"	<td><input type='checkbox' name='tss_tag' value='anyvalue' ".get_option("tss_tag", $tss_options[tss_tag]).">\r\n".
 			"	<p><small>Automatically apply rel=\"lightbox\" tags to links.</small></p></td>\r\n".
+			"</tr>\r\n".
+			"<tr>\r\n".
+			"	<th scope='row'>Automatic Gallery Image Link Tagging:</th>\r\n".
+			"	<td><input type='checkbox' name='tss_gal' value='anyvalue' ".get_option("tss_gal", $tss_options[tss_gal]).">\r\n".
+			"	<p><small>Automatically apply rel=\"lightbox\" tags to WordPress Gallery image links.</small></p></td>\r\n".
 			"</tr>\r\n".
 			"<tr>\r\n".
 			"	<th scope='row'>Automatic Resize:</th>\r\n".
@@ -203,6 +212,7 @@ function tss_init() {
 	
 	//pass some variables from php to javascript
 	$tss_data = array(
+		"tss_gal" => get_option("tss_gal", $tss_options[tss_gal]),
 		"tss_auto" => get_option("tss_auto", $tss_options[tss_auto]),
 		"tss_scaling" => get_option("tss_scaling", $tss_options[tss_scaling]),
 		"tss_maps" => get_option("tss_maps", $tss_options[tss_maps]),
@@ -232,7 +242,12 @@ if (get_option("tss_tag", $tss_options[tss_tag])){
 }
 
 //create index on plugin activation
-register_activation_hook( __FILE__, 'tss_create_xml' );
+//register_activation_hook( __FILE__, 'tss_create_xml' );
+
+//above does not get fired for upgrades, so check if file exists instead
+if (!file_exists(dirname(__FILE__)."/images.xml")) {
+	tss_create_xml();
+}
 
 //add the scripts
 add_action('init', 'tss_init');

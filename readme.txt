@@ -4,7 +4,7 @@ Homepage link: http://thydzik.com/category/slimbox2-slideshow/
 Tags: Slimbox2, jQuery, Lightbox, Slideshow, auto, resize
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 1.0.3
+Stable tag: 1.1
 Donate link: http://thydzik.com
 
 Slimbox2 Slideshow is a WordPress plugin used to display Lightbox effects on images.
@@ -62,6 +62,13 @@ Post a comment on the [Slimbox2 Slideshow homepage](http://thydzik.com/category/
 Comments and feedback is welcome, Post a comment on the [Slimbox2 Slideshow homepage](http://thydzik.com/category/slimbox2-slideshow/).
 
 == Changelog ==
+= 1.1 =
+* Added support for WordPress Gallery
+
+= 1.0.4 =
+* images.xml was being deleted and not regenerated on plugin upgrade
+* Resolved minor CSS issue
+
 = 1.0.3 =
 * Changed CSS references to unique names to minimise incompatibilities with other Slimbox plugins
 
@@ -76,6 +83,12 @@ Comments and feedback is welcome, Post a comment on the [Slimbox2 Slideshow home
 
 
 == Upgrade Notice ==
+= 1.1 =
+* Upgrade through WordPress Admin page
+
+= 1.0.4 =
+* Upgrade through WordPress Admin page
+
 = 1.0.3 =
 * Upgrade through WordPress Admin page
 
