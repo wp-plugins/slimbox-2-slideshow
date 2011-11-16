@@ -229,8 +229,9 @@ function tss_init() {
 // function based on lightbox2 plugin
 // http://www.stimuli.ca/
 function tss_addrel($content) {
-
+	global $tss_options;
 	global $post;
+	
 	$pattern        = '%(<a(?![^>]*?rel=[\'"]lightbox.*)[^>]*?href=[\'"][^\'"]+?\.(?:bmp|gif|jpg|jpeg|png)[\'"][^>]*?)(/?>)%i';
 	$replacement    = '$1 rel="lightbox'.$post->ID.'" $2';
 	$content = preg_replace($pattern, $replacement, $content);
