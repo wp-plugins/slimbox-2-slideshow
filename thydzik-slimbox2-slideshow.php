@@ -200,6 +200,8 @@ function tss_submenu_page() {
 
 //load the scripts
 function tss_init() {
+	global $tss_options;
+
     if (!is_admin()) {
 			wp_deregister_script("jquery");
 			wp_register_script("jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js", array(), Null);
