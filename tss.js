@@ -10,35 +10,23 @@
 
 //global variables
 
-var	tss_gal = tss_objects.tss_gal,
-	tss_auto = tss_objects.tss_auto,
+var	tss_auto = tss_objects.tss_auto,
 	tss_scaling = tss_objects.tss_scaling,
 	tss_maps = tss_objects.tss_maps,
 	tss_all = tss_objects.tss_all,
 	tss_time = tss_objects.tss_time,
-	tss_images = tss_objects.tss_images;
+	tss_images = tss_objects.tss_images,
+	tss_mob = tss_objects.tss_mob;
 
 jQuery.noConflict();
 
-if (!/android|iphone|ipod|series60|symbian|windows ce|blackberry/i.test(navigator.userAgent)) {
+if (!/android|iphone|ipod|series60|symbian|windows ce|blackberry/i.test(navigator.userAgent) || tss_mob) {
 	jQuery(function ($) {
 		"use strict";
 
 		var slide_time = tss_time, cn;
 
 		if (!tss_all) {tss_time = 0; }
-
-		//add the rel to wordpress galleries
-		if (tss_gal) {
-			$(".gallery").each(function (index, obj) {
-				cn = this.className;
-				$(obj).find("a").each(function () {
-					if (!$(this).attr("rel")) {
-						$(this).attr("rel", "lightbox-" + cn);
-					}
-				});
-			});
-		}
 
 		//function for the automated slideshow
 		function slideshow() {
