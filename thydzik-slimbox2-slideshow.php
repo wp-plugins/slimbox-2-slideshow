@@ -24,7 +24,7 @@
 
 */
 
-define("TSS_VERSION", '1.2');
+define("TSS_VERSION", '1.2.1');
 
 //lets create some nice output for our google bots.
 if(!function_exists("get_option")) {
