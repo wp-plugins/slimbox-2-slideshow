@@ -4,7 +4,7 @@ Homepage link: http://thydzik.com/category/slimbox2-slideshow/
 Tags: Slimbox2, jQuery, Lightbox, Slideshow, auto, resize
 Requires at least: 2.8
 Tested up to: 3.3
-Stable tag: 1.2
+Stable tag: 1.2.1
 Donate link: http://thydzik.com/category/slimbox2-slideshow/
 
 Slimbox2 Slideshow is a WordPress plugin used to display Lightbox effects on images.
@@ -53,6 +53,10 @@ Simply create a link to url "#slideshow" (or even just "#slide"), i.e. href="#sl
 
 == Frequently Asked Questions ==
 
+= My images are not seen in the entire WordPress images Slideshow =
+
+Confirm folder 'slimbox-2-slideshow' and 'images.xml' is writable, set folder and file permissions to 755.
+
 = Slimbox2 Slideshow is not working or experiencing problems? =
 
 Post a comment on the [Slimbox2 Slideshow homepage](http://thydzik.com/category/slimbox2-slideshow/) and be sure to accurately describe the problem and please include a link to your post with the Slimbox2 Slideshow problem.
@@ -62,6 +66,10 @@ Post a comment on the [Slimbox2 Slideshow homepage](http://thydzik.com/category/
 Comments and feedback is welcome, Post a comment on the [Slimbox2 Slideshow homepage](http://thydzik.com/category/slimbox2-slideshow/).
 
 == Changelog ==
+= 1.2.1 =
+* Slight JavaScript optimisation
+* Resolved file permissions problems
+
 = 1.2 =
 * Added support for WordPress Gallery Captions
 * Added option to enable for mobile devices
@@ -88,23 +96,26 @@ Comments and feedback is welcome, Post a comment on the [Slimbox2 Slideshow home
 
 
 == Upgrade Notice ==
+= 1.2.1 =
+* Upgrade through WordPress Plugin page
+
 = 1.2 =
-* Upgrade through WordPress Admin page
+* Upgrade through WordPress Plugin page
 
 = 1.1 =
-* Upgrade through WordPress Admin page
+* Upgrade through WordPress Plugin page
 
 = 1.0.4 =
-* Upgrade through WordPress Admin page
+* Upgrade through WordPress Plugin page
 
 = 1.0.3 =
-* Upgrade through WordPress Admin page
+* Upgrade through WordPress Plugin page
 
 = 1.0.2 =
-* Upgrade through WordPress Admin page
+* Upgrade through WordPress Plugin page
 
 = 1.0.1 =
-* Upgrade through WordPress Admin page
+* Upgrade through WordPress Plugin page
 
 = 1.0 =
 * Initial Release

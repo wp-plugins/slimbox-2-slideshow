@@ -35,7 +35,6 @@ if (!/android|iphone|ipod|series60|symbian|windows ce|blackberry/i.test(navigato
 				$(data).find("image").each(function () {
 					images.push([$(this).find("href").text(), $(this).find("title").text()]);
 				});
-				images.reverse();
 				$.slimbox(images, 0, {slideInterval: slide_time, scaler: tss_scaling, loop: true});
 			}, "xml");
 		}

@@ -3,7 +3,7 @@
 	Plugin Name: Slimbox2 with Slideshow
 	Plugin URI: http://thydzik.com/category/slimbox2-slideshow/
 	Description: Slimbox2 with auto-resize and slideshow
-	Version: 1.2
+	Version: 1.2.1
 	Author: Travis Hydzik
 	Author URI: http://thydzik.com
 */ 
@@ -49,35 +49,115 @@ $tss_options = array(
 	"tss_time"	=> 10,
 	"tss_mob"	=> "");
 
+// replaces the first occurance of a string only
+function str_replace_first($search, $replace, $subject) {
+    $pos = strpos($subject, $search);
+    if ($pos !== false) {
+        $subject = substr_replace($subject, $replace, $pos, strlen($search));
+    }
+    return $subject;
+}
+	
+function tss_addrel($content) {
+	global $tss_options;
+	global $post;
+	
+	//first get the whole 'a' element and also the 'p' caption
+	$pattern_a = '%(<a.*?href=("|\')[^>]*?\.(?:bmp|gif|jpg|jpeg|png)?\2)( *.*?>).*?</a>(?:[\s]*(?:</dt>)?[\s]*<(p|(?:dd)).*?wp-caption-text.*?>[\s]*(.*?)[\s]*</\4>)?%i';
+	
+	// 0 - the full found match
+	// 1 - the first half of the 'a' element
+	// 2 - internal match
+	// 3 - the second half of the 'a' element
+	// 4 - internal match
+	// 5 - the caption
+	
+	//these are the attributes to search for
+	$pattern_rel   = '/rel=("|\')(lightbox.*?)\1/i';
+	$pattern_title = '/title=("|\')(.*?)\1/i';
+	$pattern_alt   = '/alt=("|\')(.*?)\1/i';
+	
+	preg_match_all($pattern_a, $content, $result, PREG_SET_ORDER);
+
+	foreach ($result as $value) {
+		$sub_content = $value[0];
+		$caption = $value[5];
+
+		//search for the rel
+		if (preg_match($pattern_rel, $value[1].$value[3], $regs)) {
+			// rel value is found in the starting a element, do nothing more
+			$rel = ""; //empty the string
+		} else {
+			$rel = " rel=\"lightbox{$post->ID}\"";
+		}
+
+		//search for the  title
+		if (preg_match($pattern_title, $value[1].$value[3], $regs)) {
+			// title value is found in the starting a element, do nothing more
+			$title = ""; //empty the string
+		} elseif ($caption) {
+			//let the title equal the caption
+			$title = " title=\"{$caption}\"";
+			$caption = ""; //empty the string
+		} elseif (preg_match($pattern_alt, $value[0], $regs)) {
+			//let the title equal the alt text
+			$title = " title=\"{$regs[2]}\"";
+		}
+		//first replace the sub content, safer
+		$sub_content = str_replace_first($value[1].$value[3], $value[1].$title.$rel.$value[3], $sub_content);
+		// if there is a caption, use that instead
+		if ($caption) {
+			$sub_content = str_replace_first($regs[0], "title=\"{$caption}\"", $sub_content);
+		}
+		$content = str_replace_first($value[0], $sub_content, $content);
+	}
+	
+	return $content;
+}
+
+if (get_option("tss_tag", $tss_options[tss_tag])){
+	add_filter('the_content', 'tss_addrel', 12);
+	add_filter('the_excerpt', 'tss_addrel', 12);
+}
+	
 function tss_create_xml() {
 	global $wpdb;
 
-	$posts = $wpdb->get_results("SELECT post_content, post_title FROM $wpdb->posts where post_status='publish'");
+	$posts = $wpdb->get_results("SELECT post_content FROM $wpdb->posts WHERE post_status='publish' ORDER BY post_date ASC");
 
 	$dom = new DOMDocument;
 	
 	$image_ext = array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'thm', 'tif');
 	
 	$xml = new DOMDocument();
-	$xml->formatOutput = true;
+	$xml->formatOutput = false;
 	
 	//root node
 	$blog = $xml->createElement('blog');
 	$blog = $xml->appendChild($blog);
 	
 	foreach ($posts as $post) {
-		$post_content =  $post->post_content;
+		$post_content = $post->post_content;
+		$post_content = apply_filters('the_content', $post_content);
+
 		if ($post_content) {
 			@$dom->loadHTML($post_content);
 			$as = $dom->getElementsByTagName('a');
-			
-			foreach ($as as $a) {
-				if ($title_string=$a->getAttribute('title')) {
+
+			foreach ($as as $a){
+				if ($a->getAttribute('rel')) {
+					$title_string=$a->getAttribute('title');
 					$href_string=$a->getAttribute('href');
 					if (in_array(strtolower(pathinfo($href_string, PATHINFO_EXTENSION)), $image_ext)) {
 						//write the data
 						$image = $xml->createElement('image');
-						$image = $blog->appendChild($image);
+						//$image = $blog->appendChild($image);
+						//some smarts to add images to the top
+						if ($first = $blog->firstChild) {
+							$image = $blog->insertBefore($image, $first);
+						} else {
+							$image = $blog->appendChild($image);
+						}
 						
 						//title
 						$title = $xml->createElement('title');
@@ -97,7 +177,10 @@ function tss_create_xml() {
 	}
 	
 	$file = dirname(__FILE__)."/images.xml";
-	$xml->save($file);
+	//only write if writable
+	if (is_writable(dirname(__FILE__))) {
+		$xml->save($file);
+	}
 }
 
 
@@ -196,7 +279,7 @@ function tss_init() {
 
     if (!is_admin()) {
 		wp_deregister_script("jquery");
-		wp_register_script("jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js", array(), Null);
+		wp_register_script("jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js", array(), "1.7.1");
 		wp_enqueue_script("jquery");
 		wp_register_script("tss_js",  plugins_url("tss.min.js",__FILE__), array("jquery"), TSS_VERSION);
 		wp_enqueue_script( "tss_js" );
@@ -215,77 +298,6 @@ function tss_init() {
 		"tss_images" => plugins_url("images.xml",__FILE__));
 
 	wp_localize_script("tss_js", "tss_objects", $tss_data);
-}
-
-// replaces the first occurance of a string only
-function str_replace_first($search, $replace, $subject) {
-    $pos = strpos($subject, $search);
-    if ($pos !== false) {
-        $subject = substr_replace($subject, $replace, $pos, strlen($search));
-    }
-    return $subject;
-}
-
-function tss_addrel($content) {
-	global $tss_options;
-	global $post;
-	
-	//first get the whole 'a' element and also the 'p' caption
-	$pattern_a = '%(<a.*?href=("|\').*?\.(?:bmp|gif|jpg|jpeg|png)?\2)( *.*?>).*?</a>(?:[\s]*(?:</dt>)?[\s]*<(p|(?:dd)).*?wp-caption-text.*?>[\s]*(.*?)[\s]*</\4>)?%i';
-	
-	// 0 - the full found match
-	// 1 - the first half of the 'a' element
-	// 2 - internal match
-	// 3 - the second half of the 'a' element
-	// 4 - internal match
-	// 5 - the caption
-	
-	//these are the attributes to search for
-	$pattern_rel   = '/rel=("|\')(lightbox.*?)\1/i';
-	$pattern_title = '/title=("|\')(.*?)\1/i';
-	$pattern_alt   = '/alt=("|\')(.*?)\1/i';
-	
-	preg_match_all($pattern_a, $content, $result, PREG_SET_ORDER);
-
-	foreach ($result as $value) {
-		$sub_content = $value[0];
-		$caption = $value[5];
-
-		//search for the rel
-		if (preg_match($pattern_rel, $value[1].$value[3], $regs)) {
-			// rel value is found in the starting a element, do nothing more
-			$rel = ""; //empty the string
-		} else {
-			$rel = " rel=\"lightbox{$post->ID}\"";
-		}
-
-		//search for the  title
-		if (preg_match($pattern_title, $value[1].$value[3], $regs)) {
-			// title value is found in the starting a element, do nothing more
-			$title = ""; //empty the string
-		} elseif ($caption) {
-			//let the title equal the caption
-			$title = " title=\"{$caption}\"";
-			$caption = ""; //empty the string
-		} elseif (preg_match($pattern_alt, $value[0], $regs)) {
-			//let the title equal the alt text
-			$title = " title=\"{$regs[2]}\"";
-		}
-		//first replace the sub content, safer
-		$sub_content = str_replace_first($value[1].$value[3], $value[1].$title.$rel.$value[3], $sub_content);
-		// if there is a caption, use that instead
-		if ($caption) {
-			$sub_content = str_replace_first($regs[0], "title=\"{$caption}\"", $sub_content);
-		}
-		$content = str_replace_first($value[0], $sub_content, $content);
-	}
-	
-	return $content;
-}
-
-if (get_option("tss_tag", $tss_options[tss_tag])){
-	add_filter('the_content', 'tss_addrel', 12);
-	add_filter('the_excerpt', 'tss_addrel', 12);
 }
 
 //create index on plugin activation
